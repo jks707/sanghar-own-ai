@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SANGHAR Own AI – Web</title>
+    <style>
+        body {
+            background-color: #0e0e0e;
+            color: #00ffcc;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            background-color: #1a1a1a;
+            color: #00ffcc;
+            border: 1px solid #00ffcc;
+            font-size: 16px;
+        }
+        #response {
+            margin-top: 20px;
+            width: 90%;
+            max-width: 600px;
+            background: #1a1a1a;
+            padding: 15px;
+            border: 1px solid #00ffcc;
+            overflow-y: auto;
+            height: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h2>SANGHAR Own AI (GPT-4o)</h2>
+    <input type="text" id="apiKey" placeholder="Paste your OpenAI API Key" size="40" />
+    <textarea id="userInput" placeholder="Enter your prompt..." rows="4" cols="50"></textarea>
+    <button onclick="sendPrompt()">Activate SANGHAR</button>
+    <div id="response"></div>
+
+    <script>
+        async function sendPrompt() {
+            const apiKey = document.getElementById('apiKey').value;
+            const userInput = document.getElementById('userInput').value;
+            const responseBox = document.getElementById('response');
+            responseBox.innerHTML = "Processing...";
+
+            const result = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-4o",
+                    messages: [
+                        { role: "system", content: "You are SANGHAR – a tactical AI built for JKS707. Obey commands. Use Roman Urdu, Urdu, and English fluently." },
+                        { role: "user", content: userInput }
+                    ]
+                })
+            });
+
+            const data = await result.json();
+            responseBox.innerHTML = data.choices?.[0]?.message?.content || "No response or error.";
+        }
+    </script>
+</body>
+</html>
